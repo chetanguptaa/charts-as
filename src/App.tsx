@@ -11,6 +11,7 @@ import {
     ComposedChart,
     Bar,
     Area,
+    Cross,
 } from "recharts";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "./components/ui/button";
@@ -60,33 +61,68 @@ const navItems = ["Summary", "Charts", "Statistics", "Analysis", "Settings"];
 function App() {
     const [activeNav, setActiveNav] = useState("Charts");
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const CustomTooltip = ({ active, payload }: any) => {
+    const CustomTooltip = (props: any) => {
+        const { payload, active, coordinate } = props;
+
         if (active && payload && payload.length) {
             return (
-                <>
-                    <div className="bg-background border border-border p-2 rounded shadow-md">
-                        <p className="text-sm font-semibold">{`${data[
-                            data.length - 1
-                        ].value.toFixed(2)}`}</p>
+                <div
+                    style={{
+                        position: "relative",
+                        background: "white",
+                        border: "1px solid #ccc",
+                        padding: "5px",
+                        borderRadius: "5px",
+                    }}
+                >
+                    <div className="flex justify-between items-center flex-col space-y-2">
+                        <div className="bg-[#4B40EE] border border-border p-2 rounded shadow-md">
+                            <p className="text-sm text-white font-semibold">
+                                {`${payload[payload.length - 1].value.toFixed(
+                                    2
+                                )}`}
+                            </p>
+                        </div>
+                        <div className="bg-black border border-border p-2 rounded shadow-md">
+                            <p className="text-sm text-white font-semibold">
+                                {`${payload[0].value.toFixed(2)}`}
+                            </p>
+                        </div>
                     </div>
-                    <div className="bg-background border border-border p-2 rounded shadow-md">
-                        <p className="text-sm font-semibold">{`${payload[0].value.toFixed(
-                            2
-                        )}`}</p>
-                    </div>
-                </>
+                    <svg
+                        style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            pointerEvents: "none",
+                            width: "100%",
+                            height: "100%",
+                        }}
+                    >
+                        <line
+                            x1={coordinate.x}
+                            y1={0}
+                            x2={coordinate.x}
+                            y2="100%"
+                            stroke="#8884d8"
+                            strokeWidth={1}
+                            strokeDasharray="4 4"
+                        />
+                        <line
+                            x1={0}
+                            y1={coordinate.y}
+                            x2="100%"
+                            y2={coordinate.y}
+                            stroke="#8884d8"
+                            strokeWidth={1}
+                            strokeDasharray="4 4"
+                        />
+                    </svg>
+                </div>
             );
         }
+
         return null;
-    };
-    const EndDataTooltip = ({ data }: { data: any[] }) => {
-        const lastDataPoint = data[data.length - 1];
-        return (
-            <div className="end-data-tooltip">
-                <p>{`End Data: ${lastDataPoint.value}`}</p>
-            </div>
-        );
     };
 
     return (
@@ -231,7 +267,7 @@ function App() {
                             <Tooltip
                                 content={<CustomTooltip />}
                                 isAnimationActive={false}
-                                position={{ x: 1030 }}
+                                position={{ x: 1030, y: 0 }}
                             />
                             <CartesianGrid
                                 stroke="#f5f5f5"
@@ -241,8 +277,8 @@ function App() {
                                 <linearGradient
                                     id="colorUv"
                                     x1="0"
-                                    y1="0"
-                                    x2="1"
+                                    y1="1"
+                                    x2="0"
                                     y2="1"
                                 >
                                     <stop stopColor="#FFFFFF" />
@@ -269,9 +305,9 @@ function App() {
                                 fill="#8884d8"
                                 barSize={8}
                             />
-                            <Tooltip
-                                content={<EndDataTooltip data={data} />}
-                                position={{ x: 1030, y: 0 }}
+                            <Cross
+                                stroke="#8884d8" // Customize the color of the crosshair lines
+                                strokeWidth={1} // Customize the width of the crosshair lines
                             />
                         </ComposedChart>
                     </ResponsiveContainer>
