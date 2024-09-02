@@ -1,4 +1,3 @@
-import { data } from "@/lib/utils";
 import {
     Area,
     Bar,
@@ -13,7 +12,15 @@ import {
 import CustomTooltip from "./custom-tooltip";
 import CustomizedDot from "./custom-dot";
 
-const Chart = () => {
+const Chart = ({
+    data,
+}: {
+    data: {
+        name: string;
+        value: number;
+        barVal: number;
+    }[];
+}) => {
     return (
         <div className="h-[70vh]">
             <ResponsiveContainer width="75%" height="75%">

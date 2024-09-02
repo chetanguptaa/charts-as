@@ -3,8 +3,17 @@ import { Button } from "./components/ui/button";
 import { Maximize2, PlusCircle } from "lucide-react";
 import Chart from "./components/chart";
 import Navbar from "./components/navbar";
+import { useState } from "react";
+import generateData from "@/lib/utils";
 
 function App() {
+    const [selectedPeriod, setSelectedPeriod] = useState("1w");
+    const [data, setData] = useState(generateData());
+    const handlePeriodChange = (period: string) => {
+        setSelectedPeriod(period);
+        setData(generateData());
+    };
+    const periods = ["1d", "3d", "1w", "1m", "6m", "1y", "max"];
     return (
         <div className="w-full">
             <div className="p-0">
@@ -36,25 +45,24 @@ function App() {
                         Compare
                     </Button>
                     <div className="flex space-x-2">
-                        {["1d", "3d", "1w", "1m", "6m", "1y", "max"].map(
-                            (period) => (
-                                <Button
-                                    key={period}
-                                    variant={"outline"}
-                                    className={`
-                                        ${
-                                            period === "1w"
-                                                ? "bg-[#4B40EE] hover:bg-[#4B40EE] hover:text-white text-white"
-                                                : "text-gray-500"
-                                        } border-none rounded-[5px]`}
-                                >
-                                    {period}
-                                </Button>
-                            )
-                        )}
+                        {periods.map((period) => (
+                            <Button
+                                key={period}
+                                variant={"outline"}
+                                onClick={() => handlePeriodChange(period)}
+                                className={`
+                            ${
+                                period === selectedPeriod
+                                    ? "bg-[#4B40EE] hover:bg-[#4B40EE] hover:text-white text-white"
+                                    : "text-gray-500"
+                            } border-none rounded-[5px]`}
+                            >
+                                {period}
+                            </Button>
+                        ))}
                     </div>
                 </div>
-                <Chart />
+                <Chart data={data} />
             </div>
         </div>
     );

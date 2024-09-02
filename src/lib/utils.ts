@@ -46,4 +46,4 @@ const generateData = (): {
     return result;
 };
 
-export const data = generateData();
+export default generateData;
